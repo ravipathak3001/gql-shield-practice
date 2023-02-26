@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepare":"husky install",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --project tsconfig.json",
+    "eslint-fix": "eslint \"server/**/*.ts\"",
+    "prepare": "husky install",
+    "prettier": "prettier --config .prettierrc.json --write server/**/*.ts",
+    "start": "node ./dist/server/server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +19,14 @@
   },
   "devDependencies": {
     "@types/node": "^18.14.1",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "eslint": "^8.35.0",
+    "eslint-config-standard-with-typescript": "^34.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
+    "prettier": "2.8.4",
     "typescript": "^4.9.5"
   }
 }
