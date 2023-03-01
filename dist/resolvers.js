@@ -8,5 +8,6 @@ const data_1 = __importDefault(require("./data"));
 exports.resolvers = {
     Query: {
         books: () => data_1.default,
+        hello: () => 'Hello',
     },
 };

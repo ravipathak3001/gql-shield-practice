@@ -1,67 +1,50 @@
-import { ApolloServer } from '@apollo/server';
-import { applyMiddleware } from 'graphql-middleware';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { BaseContext } from '@apollo/server';
+import { config } from 'dotenv';
 import express from 'express';
 import http from 'http';
-import { json } from 'body-parser';
 import cors from 'cors';
+import { expressMiddleware } from '@apollo/server/express4';
+import { json } from 'body-parser';
+import initializeApolloServer from './initializeApolloServer';
 
-import { typeDefs } from './schema';
-import { resolvers } from './resolvers';
-import { permissions } from './permission';
+export type Context = BaseContext & {
+  user: Partial<string>;
+};
 
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
+const context = async ({ req }): Promise<Context> => {
+  //await parseJwt(req);
+  return {
+    user: 'Ravi',
+  };
+};
 
-const server = new ApolloServer({
-  schema: applyMiddleware(schema, permissions),
-  resolvers,
-  context: ({ req }) => {
-    return {
-      user: req.headers.user || '',
-    };
-  },
-});
+const init = async (): Promise<void> => {
+  config();
+  const PORT = process.env.PORT || 8000;
+  const app: express.Application = express();
+  const httpServer = http.createServer(app);
+  app.enable('trust proxy');
+  app.options('*', cors());
+  app.all('/healthCheck', (_req, res) => res.status(200).send('Healthy'));
 
-const app = express();
-// const httpServer = http.createServer(app);
-// const server = new ApolloServer({
-//   typeDefs,
-//   resolvers,
-//   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-// });
+  // await initiateMongoServer();
 
-const start = async () => {
-  // await server.start();
+  const apolloServer = initializeApolloServer(httpServer);
+  await apolloServer.start();
 
-  const app = express();
-  server.applyMiddleware({ app });
-
-  app.listen({ port: 4000 }, () =>
-    console.log(
-      `🚀 Server ready at http://localhost:4000${server.graphqlPath}`,
-    ),
+  app.use(
+    '/graphql',
+    cors<cors.CorsRequest>(),
+    json(),
+    expressMiddleware(apolloServer, {
+      context,
+    }),
   );
 
-  // app.use(
-  //   '/graphql',
-  //   cors<cors.CorsRequest>({
-  //     origin: [
-  //       'https://www.your-app.example',
-  //       'https://studio.apollographql.com',
-  //     ],
-  //   }),
-  //   json(),
-  //   expressMiddleware(server),
-  // );
-
-  // await new Promise<void>((resolve) =>
-  //   httpServer.listen({ port: 4000 }, resolve),
-  // );
-  // console.log(`🚀 Server ready at http://localhost:4000/graphql`);
+  httpServer.listen(PORT, () => {
+    console.log(
+      `🚀 query endpoint running at http://localhost:${PORT}/graphql`,
+    );
+  });
 };
-start();
+init();
