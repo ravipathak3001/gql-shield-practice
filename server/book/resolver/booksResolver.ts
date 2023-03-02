@@ -1,6 +1,7 @@
 import books from '../../data';
 
-export default async (_source: any, args: any) => {
+export const bookResolver = () => {
+
   return [
     {
       title: 'The Awakening',

@@ -1,16 +1,17 @@
 import { allow } from 'graphql-shield';
-import booksResolver from './resolver/booksResolver';
+import { bookResolver } from './resolver/booksResolver';
 import { books } from './types/book';
 
 export const bookQueries = {
   getBooksList: {
     type: books,
-    resolve: booksResolver,
+    resolve: bookResolver,
   },
 };
 
 export const bookPermission = {
   Query: {
-    getBooksList: allow,
+    '*': allow,
+    // getBooksList: allow,
   },
 };

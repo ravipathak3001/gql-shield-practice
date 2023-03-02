@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bookResolver = void 0;
-const bookResolver = () => {
+const books = () => {
     return [
         {
             title: 'The Awakening',
@@ -13,4 +12,4 @@ const bookResolver = () => {
         },
     ];
 };
-exports.bookResolver = bookResolver;
+exports.default = books;
