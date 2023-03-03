@@ -1,4 +1,5 @@
 import { allow } from 'graphql-shield';
+import isAdmin from '../shield/isAdmin';
 import { bookResolver } from './resolver/booksResolver';
 import { books } from './types/book';
 
@@ -11,7 +12,7 @@ export const bookQueries = {
 
 export const bookPermission = {
   Query: {
-    '*': allow,
-    // getBooksList: allow,
+    // '*': allow,
+    getBooksList: isAdmin,
   },
 };

@@ -14,7 +14,7 @@ export type Context = BaseContext & {
 const context = async ({ req }): Promise<Context> => {
   //await parseJwt(req);
   return {
-    user: 'Ravi',
+    user: 'ADMIN',
   };
 };
 

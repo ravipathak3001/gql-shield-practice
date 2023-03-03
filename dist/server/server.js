@@ -13,7 +13,7 @@ const initializeApolloServer_1 = __importDefault(require("./initializeApolloServ
 const context = async ({ req }) => {
     //await parseJwt(req);
     return {
-        user: 'Ravi',
+        user: 'ADMIN',
     };
 };
 const init = async () => {
